@@ -1,1 +1,1 @@
-# FiremanGrid
+# multiagent-minigrid
