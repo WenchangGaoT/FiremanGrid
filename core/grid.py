@@ -41,3 +41,4 @@ class Grid:
                     encoded[i, j, :] = v.encode()
         return encoded
         
+        

@@ -25,12 +25,18 @@ class WorldObj:
         # Whether this object can be picked up
         return False
     
-    def can_spray(self, inventory):
+    def can_spray(self):
         # Whether this object can be sprayed to 
         return False 
     
+    def can_be_sprayed(self):
+        return False
+    
     def can_save(self):
         # Whether this object can be saved 
+        return False 
+    
+    def can_toggle(self):
         return False
     
     def toggle(self, env, pos):
@@ -85,7 +91,10 @@ class Door(WorldObj):
         return True
     
     def can_overlap(self):
-        return self.is_open
+        return self.is_open 
+    
+    def can_toggle(self):
+        return True
     
     def encode(self):
         if self.is_open: 
@@ -153,12 +162,10 @@ class Fire(WorldObj):
         return False
     
     def render(self):
-        pass
+        pass 
 
-    def can_spray(self, inventory):
-        # Returns True if agent has at least one fireextinguisher
-        fe_id = OBJECT_TO_IDX['fireextinguisher']
-        return inventory[fe_id] >= 1
+    def can_be_sprayed(self):
+        return True
 
 
 class FireExtinguisher(WorldObj):
@@ -171,8 +178,9 @@ class FireExtinguisher(WorldObj):
     def can_overlap(self):
         return False 
     
-    def can_pickup(self):
+    def can_spray(self):
         return True 
+    
     
 
 class Survivor(WorldObj):
@@ -185,9 +193,11 @@ class Survivor(WorldObj):
     def can_overlap(self):
         return False
     
+
 class Debris(WorldObj):
     def __init__(self, type: str, color: str = None):
         super().__init__('debris', 'black') 
+
 
 class Start(WorldObj):
     '''
