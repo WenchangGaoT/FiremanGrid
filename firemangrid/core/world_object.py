@@ -1,4 +1,6 @@
-from core.constants import IDX_TO_OBJECT, OBJECT_TO_IDX, IDX_TO_COLOR, COLOR_TO_IDX, COLORS
+# TODO: Add more realistic rendering for each object
+from firemangrid.core.constants import *
+from firemangrid.utils.rendering import *
 
 
 class WorldObj:
@@ -40,7 +42,13 @@ class WorldObj:
         return False
     
     def toggle(self, env, pos):
-        return False
+        return False 
+    
+    def spray(self, env, pos):
+        return False 
+    
+    def render(self, img: np.ndarray):
+        fill_coords(img, point_in_rect(0, 1, 0, 1), COLORS[self.color])
     
     def encode(self):
         return (OBJECT_TO_IDX[self.type], COLOR_TO_IDX[self.color], 0)
@@ -64,10 +72,6 @@ class Goal(WorldObj):
     
     def can_overlap(self):
         return True 
-    
-    def render(self):
-        # TODO: Implement rendering
-        pass
 
 
 class Door(WorldObj):
@@ -104,10 +108,6 @@ class Door(WorldObj):
         else:
             state = 1
         return (OBJECT_TO_IDX[self.type], COLOR_TO_IDX[self.color], state)
-    
-    def render(self):
-        # TODO: Implement rendering
-        pass 
 
 
 class Button(WorldObj):
@@ -124,10 +124,6 @@ class Button(WorldObj):
     def encode(self):
         return (OBJECT_TO_IDX[self.type], COLOR_TO_IDX[self.color], 0)
 
-    def render(self):
-        # TODO: Implement rendering
-        pass
-
 
 class Wall(WorldObj):
     
@@ -136,10 +132,6 @@ class Wall(WorldObj):
         
     def can_overlap(self):
         return False
-        
-    def render(self):
-        # TODO: Implement rendering
-        pass 
 
 
 class Lava(WorldObj):
@@ -149,10 +141,7 @@ class Lava(WorldObj):
         
     def can_overlap(self):
         return False
-        
-    def render(self):
-        pass
-
+    
 
 class Fire(WorldObj):
     def __init__(self):
@@ -160,9 +149,6 @@ class Fire(WorldObj):
     
     def can_overlap(self):
         return False
-    
-    def render(self):
-        pass 
 
     def can_be_sprayed(self):
         return True

@@ -5,8 +5,8 @@ from gymnasium import spaces
 from enum import IntEnum
 from abc import abstractmethod
 
-from core.grid import Grid
-from core.constants import IDX_TO_OBJECT, OBJECT_TO_IDX, IDX_TO_COLOR, COLOR_TO_IDX, COLORS, DIR_TO_VEC
+from firemangrid.core.grid import Grid
+from firemangrid.core.constants import *
 
 
 class Action(IntEnum):

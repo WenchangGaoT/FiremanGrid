@@ -1,7 +1,7 @@
 from copy import deepcopy
 import numpy as np  
 
-from core.constants import IDX_TO_COLOR, IDX_TO_OBJECT, IDX_TO_STATE, DIR_TO_VEC, OBJECT_TO_IDX
+from firemangrid.core.constants import *
 
 
 class Grid:

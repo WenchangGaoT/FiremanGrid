@@ -1,15 +1,15 @@
-from typing import Any
+import sys
 import numpy as np 
-import gymnasium as gym
+import gymnasium as gym 
 
 from enum import IntEnum
 from abc import abstractmethod 
 from gymnasium import spaces 
 
-from utils.window import Window
-from core.world_object import * 
-from core.constants import * 
-from core.grid import * 
+from firemangrid.utils.window import Window
+from firemangrid.core.world_object import * 
+from firemangrid.core.constants import * 
+from firemangrid.core.grid import * 
 
 
 class Actions(IntEnum):
@@ -19,7 +19,8 @@ class Actions(IntEnum):
     pickup = 3
     spray = 4 
     toggle = 5 
-    hold = 6 
+    save = 6
+    hold = 7 
 
 
 class FiremanEnv(gym.Env):
@@ -146,11 +147,17 @@ class FiremanEnv(gym.Env):
                 pass 
 
         elif action == self.actions.toggle:
-            if fwd_cell is None or fwd_cell.can_toggle():
+            if fwd_cell is None or not fwd_cell.can_toggle(): # Invalid action
                 pass 
             else: 
                 fwd_cell.toggle(self, fwd_pos) 
-                # TODO: add more conditions based on the graph environment
+                # TODO: add more conditions based on the graph environment 
+        
+        elif action == self.actions.save: 
+            if fwd_cell is None or fwd_cell.can_save():
+                pass # TODO: add more conditions based on the graph environment 
+            else: 
+                pass # Do nothing
         
         elif action == self.actions.hold:
             # Do nothing!
