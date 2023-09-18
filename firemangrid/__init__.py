@@ -19,4 +19,10 @@ register(
 register(
     id='FiremanGrid-OpenDoor-v0',
     entry_point='firemangrid.envs:OpenDoorEnv',
+) 
+
+register(
+    id='FiremanGrid-FiremanWhole-v0',
+    entry_point='firemangrid.envs:FiremanWholeEnv',
+    kwargs={'task': 'whole'}
 )
