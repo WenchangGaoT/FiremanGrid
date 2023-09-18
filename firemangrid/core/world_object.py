@@ -178,7 +178,7 @@ class FireExtinguisher(WorldObj):
     
 
 class Survivor(WorldObj):
-    def __init__(self, name='Survivor1'):
+    def __init__(self, name='survivor'):
         super().__init__(name, color='purple') 
 
     def can_save(self):

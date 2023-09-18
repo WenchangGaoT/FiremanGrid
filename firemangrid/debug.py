@@ -130,7 +130,7 @@ class CLIControl:
 
 if __name__ == "__main__":
 
-    env_id = 'FiremanGrid-MoveDebris-v0'
+    env_id = 'FiremanGrid-RescueSurvivor-v0'
 
     env: ExtinguishFireEnv = gym.make(
         env_id,

@@ -1,4 +1,5 @@
 import sys
+from typing import Any
 import numpy as np 
 import gymnasium as gym 
 
@@ -80,7 +81,10 @@ class FiremanEnv(gym.Env):
             'direction': self.agent_dir,
             'inventory': np.zeros(len(OBJECT_TO_IDX), dtype=np.uint8) # TODO: Add inventory
         } 
-        return obs
+        return obs 
+    
+    def _reward(self):
+        return 1.0 - (self.step_count / self.max_steps)
 
     def reset(self, seed=None, options=None):
         super().reset(seed=seed) 
@@ -160,7 +164,8 @@ class FiremanEnv(gym.Env):
                 pass # Nothing to save
             else: 
                 if self.grid.is_safe():
-                    fwd_cell.save(self, fwd_pos) 
+                    terminated = True 
+                    reward = self._reward()
 
         elif action == self.actions.move:
             if fwd_cell is None or not fwd_cell.can_move():
