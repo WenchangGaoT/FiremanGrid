@@ -145,7 +145,7 @@ class FiremanEnv(gym.Env):
                 self.carrying = None
             if fwd_cell is not None and fwd_cell.can_be_sprayed():
                 # TODO: add more conditions based on the graph environment  
-                pass 
+                self.grid.set(*fwd_pos, None)
 
         elif action == self.actions.toggle:
             if fwd_cell is None or not fwd_cell.can_toggle(): # Invalid action
