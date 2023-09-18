@@ -1,4 +1,5 @@
 # TODO: Add more realistic rendering for each object
+from typing import Any
 from firemangrid.core.constants import *
 from firemangrid.utils.rendering import *
 
@@ -84,18 +85,26 @@ class Door(WorldObj):
     '''
 
     def __init__(self, color, is_open=False, is_locked=False):
-        super().__init__(f"{color}door", color)
+        super().__init__("door", color)
         self.is_open = is_open
         self.is_locked = is_locked
     
     def toggle(self, env, pos):
+        # if self.is_locked:
+        #     if self.color in env.buttons_pressed:
+        #         self.is_locked = False
+        #         self.is_open = True
+        #         return True
+        #     return False
         if self.is_locked:
-            if self.color in env.buttons_pressed:
+            if env.carrying is not None and env.carrying.type == 'key' and env.carrying.color == self.color:
                 self.is_locked = False
                 self.is_open = True
                 return True
-            return False
-        self.is_open = not self.is_open
+            else:
+                return False
+        self.is_open = not self.is_open 
+        env.carrying = None
         return True
     
     def can_overlap(self):
@@ -204,4 +213,12 @@ class Start(WorldObj):
         super().__init__('start', 'white') 
     
     def can_overlap(self):
+        return True 
+    
+
+class Key(WorldObj):
+    def __init__(self, color):
+        super().__init__('key', color) 
+    
+    def can_pickup(self):
         return True

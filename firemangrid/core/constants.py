@@ -42,7 +42,10 @@ OBJECT_TO_IDX = {
     'fireextinguisher': 5,
     'debris': 6,
     
-    'survivor': 7
+    'survivor': 7,
+
+    'door': 8,
+    'key': 9,
 }
 
 IDX_TO_OBJECT = dict(zip(OBJECT_TO_IDX.values(), OBJECT_TO_IDX.keys()))

@@ -14,4 +14,9 @@ register(
 register(
     id='FiremanGrid-RescueSurvivor-v0',
     entry_point='firemangrid.envs:RescueSurvivorEnv',
+) 
+
+register(
+    id='FiremanGrid-OpenDoor-v0',
+    entry_point='firemangrid.envs:OpenDoorEnv',
 )
