@@ -25,7 +25,7 @@ class Actions(IntEnum):
 
 class FiremanEnv(gym.Env):
     metadata = { 
-        'render.modes': ['human', 'rgb_array'],
+        'render.modes': ['human', 'rgb_array', 'cli'],
         'render_fps': 10 
     }
 
@@ -54,6 +54,7 @@ class FiremanEnv(gym.Env):
         )
 
         self.window = Window 
+        self.grid_size = grid_size
 
         # Agent settings 
         self.agent_pos = None
@@ -176,13 +177,21 @@ class FiremanEnv(gym.Env):
         return obs, reward, terminated, truncated, {} 
     
     def render(self):
-        if self.window is None:
-            self.window = Window('FiremanGrid') 
-            self.window.show(block=False)
-        self.window.show_img(self.grid.render(
-            self.agent_pos,
-            self.agent_dir
-        )) 
+        if self.render_mode == 'human':
+            if self.window is None:
+                self.window = Window('FiremanGrid') 
+                self.window.show(block=False)
+            self.window.show_img(self.grid.render(
+                self.agent_pos,
+                self.agent_dir
+            ))  
+        elif self.render_mode == 'rgb_array':
+            # TODO: rgb rendering 
+            pass
+
+        elif self.render_mode == 'cli':
+            img = self.grid.render(self.agent_pos, self.agent_dir) 
+            print(img)
 
     def close(self):
         if self.window:
