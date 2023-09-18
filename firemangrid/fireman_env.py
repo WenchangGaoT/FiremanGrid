@@ -191,7 +191,8 @@ class FiremanEnv(gym.Env):
 
         elif self.render_mode == 'cli':
             img = self.grid.render(self.agent_pos, self.agent_dir, render_mode='cli') 
-            print(img)
+            print(img.shape)
+            print(np.transpose(img, (1, 0)))
 
     def close(self):
         if self.window:
