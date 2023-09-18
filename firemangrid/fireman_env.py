@@ -81,7 +81,7 @@ class FiremanEnv(gym.Env):
         } 
         return obs
 
-    def reset(self, seed=None):
+    def reset(self, seed=None, options=None):
         super().reset(seed=seed) 
         self.agent_pos = (-1, -1)
         self.agent_dir = -1 
@@ -190,7 +190,7 @@ class FiremanEnv(gym.Env):
             pass
 
         elif self.render_mode == 'cli':
-            img = self.grid.render(self.agent_pos, self.agent_dir) 
+            img = self.grid.render(self.agent_pos, self.agent_dir, render_mode='cli') 
             print(img)
 
     def close(self):

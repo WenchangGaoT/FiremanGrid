@@ -3,6 +3,7 @@ import numpy as np
 import math
 
 from firemangrid.core.constants import *
+from firemangrid.core.world_object import *
 from firemangrid.utils.rendering import *
 
 
@@ -26,8 +27,8 @@ class Grid:
         assert j >= 0 and j < self.height
         return self.grid[j * self.width + i]
     
-    def render(self, agent_pos, agent_dir, tile_size):
-        if self.render_mode == 'human':
+    def render(self, agent_pos, agent_dir, tile_size=30, render_mode='human'):
+        if render_mode == 'human':
             w_px = self.width * tile_size
             h_px = self.height * tile_size
             img = np.zeros((w_px, h_px, 3), dtype=np.uint8) # The rendered image
@@ -54,18 +55,18 @@ class Grid:
 
             return img
         
-        elif self.render_mode == 'rgb_array':
+        elif render_mode == 'rgb_array':
             # TODO: Implement this
             pass 
 
-        elif self.render_mode == 'cli':
+        elif render_mode == 'cli':
             img = np.zeros((self.width, self.height), dtype=np.uint8)
             for i in range(self.height):
                 for j in range(self.width):
-                    cell = self.get(i, j)
+                    cell = self.grid[j*self.width+i]
                     if cell is not None:
                         img[i, j] = cell.encode()[0]
-                    if self.agent_pos[0] == i and self.agent_pos[1] == j:
+                    if agent_pos[0] == i and agent_pos[1] == j:
                         img[i, j] = 20+agent_dir # Encode the agent's direction in cli
             return img
 
@@ -75,11 +76,14 @@ class Grid:
         for i in range(self.width):
             for j in range(self.height):
                 v = self.get(i, j)
+                # print(type(self.get(i, j)))
                 if v is None:
                     encoded[i, j, 0] = OBJECT_TO_IDX['empty']
                     encoded[i, j, 1] = 0 
                     encoded[i, j, 2] = 0
                 else: 
+                    # print(encoded[i, j, :])
+                    # print(type(v.encode()))
                     encoded[i, j, :] = v.encode()
         return encoded
         

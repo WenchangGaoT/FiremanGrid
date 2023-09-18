@@ -9,8 +9,8 @@ class WorldObj:
     '''
 
     def __init__(self, type: str, color: str = None):
-        assert type in IDX_TO_OBJECT, f"Invalid object type: {type}"
-        assert color is None or color in IDX_TO_COLOR, f"Invalid color: {color}"
+        assert type in OBJECT_TO_IDX, f"Invalid object type: {type}"
+        assert color is None or color in COLOR_NAMES, f"Invalid color: {color}"
 
         self.type = type
         self.color = color
@@ -51,7 +51,8 @@ class WorldObj:
         fill_coords(img, point_in_rect(0, 1, 0, 1), COLORS[self.color])
     
     def encode(self):
-        return (OBJECT_TO_IDX[self.type], COLOR_TO_IDX[self.color], 0)
+        # print(OBJECT_TO_IDX[self.type], COLOR_TO_IDX[self.color], 0)
+        return np.array([OBJECT_TO_IDX[self.type], COLOR_TO_IDX[self.color], 0], dtype=np.uint8)
     
     @staticmethod
     def decode(type_idx, color_idx, state):
@@ -127,11 +128,15 @@ class Button(WorldObj):
 
 class Wall(WorldObj):
     
-    def __init__(self):
-        super().__init__("wall", 'grey')
+    def __init__(self, color='grey'):
+        super().__init__("wall", color)
         
     def can_overlap(self):
-        return False
+        return False 
+    
+    def encode(self) -> np.ndarray:
+        # return OBJECT_TO_IDX[self.type]
+        return np.array([OBJECT_TO_IDX[self.type], COLOR_TO_IDX[self.color], 0], dtype=np.uint8)
 
 
 class Lava(WorldObj):

@@ -37,8 +37,7 @@ OBJECT_TO_IDX = {
     'goal': 2,
 
     "wall": 3, 
-
-    # 
+    
     'fire': 4,
     'fireextinguisher': 5,
     'debris': 6

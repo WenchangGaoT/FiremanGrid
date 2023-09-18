@@ -137,5 +137,5 @@ if __name__ == "__main__":
     )
 
     # TODO: check if this can be removed
-    manual_control = ManualControl(env)
-    manual_control.start()
+    cli_control = CLIControl(env)
+    cli_control.start()
