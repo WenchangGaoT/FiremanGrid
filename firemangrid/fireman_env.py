@@ -20,7 +20,8 @@ class Actions(IntEnum):
     spray = 4 
     toggle = 5 
     save = 6
-    hold = 7 
+    move = 7
+    hold = 8 
 
 
 class FiremanEnv(gym.Env):
@@ -155,10 +156,17 @@ class FiremanEnv(gym.Env):
                 # TODO: add more conditions based on the graph environment 
         
         elif action == self.actions.save: 
-            if fwd_cell is None or fwd_cell.can_save():
-                pass # TODO: add more conditions based on the graph environment 
+            if fwd_cell is None or not fwd_cell.can_save():
+                pass # Nothing to save
             else: 
-                pass # Do nothing
+                if self.grid.is_safe():
+                    fwd_cell.save(self, fwd_pos) 
+
+        elif action == self.actions.move:
+            if fwd_cell is None or not fwd_cell.can_move():
+                pass 
+            else:
+                self.grid.set(*fwd_pos, None)
         
         elif action == self.actions.hold:
             # Do nothing!

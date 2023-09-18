@@ -25,7 +25,15 @@ class Grid:
     def get(self, i, j):
         assert i >= 0 and i < self.width
         assert j >= 0 and j < self.height
-        return self.grid[j * self.width + i]
+        return self.grid[j * self.width + i] 
+    
+    def is_safe(self): 
+        for i in range(self.height):
+            for j in range(self.width):
+                cell = self.get(i, j)
+                if cell is not None and (cell.type == 'fire' or cell.type == 'debris'):
+                    return False 
+        return True
     
     def render(self, agent_pos, agent_dir, tile_size=30, render_mode='human'):
         if render_mode == 'human':

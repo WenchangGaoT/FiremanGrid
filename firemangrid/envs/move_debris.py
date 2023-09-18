@@ -8,7 +8,7 @@ from firemangrid.core.world_object import *
 from firemangrid.fireman_env import FiremanEnv
 
 
-class ExtinguishFireEnv(FiremanEnv):
+class MoveDebrisEnv(FiremanEnv):
     def __init__(self, grid_size=10, max_steps=500, render_mode='rgb_array'):
         super().__init__(grid_size, max_steps, render_mode) 
 
@@ -23,8 +23,8 @@ class ExtinguishFireEnv(FiremanEnv):
             self.grid.set(0, j, Wall()) 
             self.grid.set(height-1, j, Wall()) 
         
-        self.grid.set(3, 5, Fire()) 
-        self.grid.set(6, 6, Fire()) 
+        self.grid.set(3, 5, Debris()) 
+        self.grid.set(6, 6, Debris()) 
         self.grid.set(6, 3, FireExtinguisher()) 
 
         # Initialize the agent 

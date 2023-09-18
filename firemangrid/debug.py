@@ -93,7 +93,8 @@ class CLIControl:
             "k": Actions.pickup,
             "l": Actions.spray,
             "u": Actions.save,
-            'i': Actions.hold
+            'i': Actions.move,
+            'o': Actions.hold
         }
 
     def start(self):
@@ -129,7 +130,7 @@ class CLIControl:
 
 if __name__ == "__main__":
 
-    env_id = 'FiremanGrid-ExtinguishFire-v0'
+    env_id = 'FiremanGrid-MoveDebris-v0'
 
     env: ExtinguishFireEnv = gym.make(
         env_id,

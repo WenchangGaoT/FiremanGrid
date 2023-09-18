@@ -32,6 +32,9 @@ class WorldObj:
         return False 
     
     def can_be_sprayed(self):
+        return False 
+    
+    def can_move(self):
         return False
     
     def can_save(self):
@@ -39,7 +42,7 @@ class WorldObj:
         return False 
     
     def can_toggle(self):
-        return False
+        return False 
     
     def toggle(self, env, pos):
         return False 
@@ -186,8 +189,11 @@ class Survivor(WorldObj):
     
 
 class Debris(WorldObj):
-    def __init__(self, type: str, color: str = None):
-        super().__init__('debris', 'black') 
+    def __init__(self):
+        super().__init__('debris', 'black')  
+
+    def can_move(self):
+        return True
 
 
 class Start(WorldObj):

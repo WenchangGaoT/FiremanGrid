@@ -6,3 +6,8 @@ register(
         entry_point='firemangrid.envs:ExtinguishFireEnv',
     )
 
+register(
+        id='FiremanGrid-MoveDebris-v0',
+        entry_point='firemangrid.envs:MoveDebrisEnv',
+    )
+
