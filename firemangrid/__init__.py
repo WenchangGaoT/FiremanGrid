@@ -22,7 +22,7 @@ register(
 ) 
 
 register(
-    id='FiremanGrid-FiremanWhole-v0',
+    id='FiremanGrid-Start2Key-v0',
     entry_point='firemangrid.envs:FiremanWholeEnv',
-    kwargs={'task': 'whole'}
+    kwargs={'task': 'start2key'}
 )
