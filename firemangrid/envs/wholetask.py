@@ -12,6 +12,12 @@ class FiremanWholeEnv(FiremanEnv):
     def __init__(self, grid_size=13, max_steps=500, render_mode='rgb_array', task='start2key'):
         super().__init__(grid_size, max_steps, render_mode)  
         self.task = task
+        self.tasks = ['start2key', 'start2door', 'start2fireextinguisher', 'start2fire', 'start2debris', 'start2survivor',
+                      'key2start', 'key2door', 'key2fireextinguisher', 'key2fire', 'key2debris', 'key2survivor',
+                      'door2start', 'door2key', 'door2fireextinguisher', 'door2fire', 'door2debris', 'door2survivor',
+                      'fireextinguisher2start', 'fireextinguisher2key', 'fireextinguisher2door', 'fireextinguisher2fire', 'fireextinguisher2debris', 'fireextinguisher2survivor',
+                      'fire2start', 'fire2key', 'fire2door', 'fire2fireextinguisher', 'fire2debris', 'fire2survivor',
+                      'debris2start', 'debris2key', 'debris2door', 'debris2fireextinguisher', 'debris2fire', 'debris2survivor']
 
     def _gen_grid(self, width, height):
         self.grid = Grid(width=width, height=height)
@@ -57,16 +63,34 @@ class FiremanWholeEnv(FiremanEnv):
 
 
         self.grid.set(5, 2, Door('yellow'))   
-        if not (self.task == 'fire2start' or self.task == 'fire2key' or self.task == 'fire2door' or self.task == 'fire2fireextinguisher' or self.task == 'fire2debris' or self.task == 'fire2survivor'):
-            self.grid.set(*fire_pos, Fire())
+        self.task_id = self.tasks.index(self.task)
 
-        if not (self.task == 'fireextinguisher2start' or self.task == 'fireextinguisher2key' or self.task == 'fireextinguisher2door' or self.task == 'fireextinguisher2fire' or self.task == 'fireextinguisher2debris' or self.task == 'fireextinguisher2survivor'):
-            self.grid.set(*fe_pos, FireExtinguisher())  
-
-        if not (self.task == 'key2start' or self.task == 'key2door' or self.task == 'key2fireextinguisher' or self.task == 'key2fire' or self.task == 'key2debris' or self.task == 'key2survivor'):
-            self.grid.set(*key_pos, Key('yellow')) 
-        if not (self.task == 'debris2start' or self.task == 'debris2key' or self.task == 'debris2door' or self.task == 'debris2fireextinguisher' or self.task == 'debris2fire' or self.task == 'debris2survivor'):
+        if self.task_id < self.tasks.index('key2start'):
+            self.grid.set(*key_pos, Key('yellow'))
+        if self.task_id < self.tasks.index('door2start'):
+            self.grid.get(*door_pos).is_locked = True
+            self.grid.get(*door_pos).is_open = False 
+        else:
+            self.grid.get(*door_pos).is_locked = False
+            self.grid.get(*door_pos).is_open = True
+        if self.task_id < self.tasks.index('fireextinguisher2start'):
+            self.grid.set(*fe_pos, FireExtinguisher())
+        if self.task_id < self.tasks.index('fire2start'):
+            self.grid.set(*fire_pos, Fire()) 
+        if self.task_id < self.tasks.index('debris2start'):
             self.grid.set(*debris_pos, Debris())
+
+        # if not (self.task == 'fire2start' or self.task == 'fire2key' or self.task == 'fire2door' or self.task == 'fire2fireextinguisher' or self.task == 'fire2debris' or self.task == 'fire2survivor'):
+        #     self.grid.set(*fire_pos, Fire())
+
+        # if not (self.task == 'fireextinguisher2start' or self.task == 'fireextinguisher2key' or self.task == 'fireextinguisher2door' or self.task == 'fireextinguisher2fire' or self.task == 'fireextinguisher2debris' or self.task == 'fireextinguisher2survivor'):
+        #     self.grid.set(*fe_pos, FireExtinguisher())  
+
+        # if not (self.task == 'key2start' or self.task == 'key2door' or self.task == 'key2fireextinguisher' or self.task == 'key2fire' or self.task == 'key2debris' or self.task == 'key2survivor'):
+        #     self.grid.set(*key_pos, Key('yellow')) 
+
+        # if not (self.task == 'debris2start' or self.task == 'debris2key' or self.task == 'debris2door' or self.task == 'debris2fireextinguisher' or self.task == 'debris2fire' or self.task == 'debris2survivor'):
+        #     self.grid.set(*debris_pos, Debris())
 
         survivor_x = np.random.choice([1, 2, 3, 4])
         survivor_y = np.random.choice([1, 2, 3, 4]) 
@@ -136,4 +160,99 @@ class FiremanWholeEnv(FiremanEnv):
         obs = self.observation()
         return obs, {} 
     
-    
+    def step(self, action):
+        assert action >= 0 and action < self.action_space.n 
+        self.step_count += 1 
+        reward, terminated, truncated = 0, False, False
+
+        fwd_pos = DIR_TO_VEC[self.agent_dir] + self.agent_pos
+
+        fwd_cell = self.grid.get(*fwd_pos) 
+        cur_cell = self.grid.get(*self.agent_pos)
+
+        if action == self.actions.left: 
+            self.agent_dir -= 1 
+            if self.agent_dir < 0:
+                self.agent_dir += len(DIR_TO_VEC) 
+        
+        elif action == self.actions.right:
+            self.agent_dir = (self.agent_dir + 1) % len(DIR_TO_VEC) 
+
+        elif action == self.actions.forward:
+            if fwd_cell is None or fwd_cell.can_overlap():
+                self.agent_pos = fwd_pos 
+            elif fwd_cell is not None: 
+                # TODO: add more conditions based on the graph environment 
+                if fwd_cell.type == 'lava':
+                    terminated = True 
+        
+        elif action == self.actions.pickup:
+            if fwd_cell is not None and fwd_cell.can_pickup():
+                if self.carrying is None:
+                    self.carrying = fwd_cell 
+                    self.grid.set(*fwd_pos, None) 
+                else:
+                    pass # Currently we allow only pickup one thing at one time! 
+                if self.carrying.type == 'key' and (self.task == 'start2key' or self.task == 'door2key' or self.task == 'fireextinguisher2key' or self.task == 'fire2key' or self.task == 'debris2key'):
+                    reward = self._reward()
+                    terminated = True 
+                if self.carrying.type == 'fireextinguisher' and (self.task == 'start2fireextinguisher' or self.task == 'key2fireextinguisher' or self.task == 'door2fireextinguisher' or self.task == 'fire2fireextinguisher' or self.task == 'debris2fireextinguisher'):
+                    reward = self._reward()
+                    terminated = True
+        
+        elif action == self.actions.spray:
+            # The agent is allowed to waste spray 
+            if self.carrying is None:
+                pass # There is nothihg to spray
+            elif self.carrying.can_spray():
+                self.carrying = None
+                if fwd_cell is not None and fwd_cell.can_be_sprayed():
+                    # TODO: add more conditions based on the graph environment  
+                    if fwd_cell.type == 'fire' and (self.task == 'start2fire' or self.task == 'key2fire' or self.task == 'door2fire' or self.task == 'fireextinguisher2fire' or self.task == 'debris2fire'):
+                        reward = self._reward()
+                        terminated = True
+                    self.grid.set(*fwd_pos, None)
+
+        elif action == self.actions.toggle:
+            if fwd_cell is None or not fwd_cell.can_toggle(): # Invalid action
+                pass 
+            else: 
+                fwd_cell.toggle(self, fwd_pos) 
+                if fwd_cell.type == 'door' and fwd_cell.is_open == True and (self.task == 'start2door' or self.task == 'key2door' or self.task == 'fireextinguisher2door' or self.task == 'fire2door' or self.task == 'debris2door'):
+                    reward = self._reward()
+                    terminated = True
+                # TODO: add more conditions based on the graph environment 
+        
+        elif action == self.actions.save: 
+            if fwd_cell is None or not fwd_cell.can_save():
+                pass # Nothing to save
+            else: 
+                if self.grid.is_safe():
+                    if self.task == 'start2survivor' or self.task == 'key2survivor' or self.task == 'door2survivor' or self.task == 'fireextinguisher2survivor' or self.task == 'fire2survivor' or self.task == 'debris2survivor':
+                        reward = self._reward()
+                        terminated = True
+
+        elif action == self.actions.move:
+            if fwd_cell is None or not fwd_cell.can_move():
+                pass 
+            else:
+                if fwd_cell.type == 'debris' and (self.task == 'start2debris' or self.task == 'key2debris' or self.task == 'door2debris' or self.task == 'fireextinguisher2debris' or self.task == 'fire2debris'):
+                    reward = self._reward()
+                    terminated = True
+                self.grid.set(*fwd_pos, None)
+        
+        elif action == self.actions.hold:
+            # Do nothing!
+            pass 
+
+        else:
+            raise ValueError(f"Unknown action: {action}")
+        
+        if self.step_count >= self.max_steps:
+            truncated = True
+
+        if self.render_mode == 'human':
+            self.render() 
+        
+        obs = self.observation()
+        return obs, reward, terminated, truncated, {}
