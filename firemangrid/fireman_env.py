@@ -2,6 +2,7 @@ import sys
 from typing import Any
 import numpy as np 
 import gymnasium as gym 
+import matplotlib.pyplot as plt
 
 from enum import IntEnum
 from abc import abstractmethod 
@@ -90,7 +91,8 @@ class FiremanEnv(gym.Env):
         super().reset(seed=seed) 
         self.agent_pos = (-1, -1)
         self.agent_dir = -1 
-        self.step_count = 0
+        self.step_count = 0 
+        # print('environment reset')
 
         self._gen_grid(self.grid_size, self.grid_size)
 
@@ -193,11 +195,16 @@ class FiremanEnv(gym.Env):
         if self.render_mode == 'human':
             if self.window is None:
                 self.window = Window('FiremanGrid') 
-                self.window.show(block=False)
-            self.window.show_img(self.grid.render(
+                self.window.show(block=False) 
+            plt.imshow(self.grid.render(
                 self.agent_pos,
                 self.agent_dir
-            ))  
+            ))
+            plt.show()
+            # self.window.show_img(self.grid.render(
+            #     self.agent_pos,
+            #     self.agent_dir
+            # ))  
         elif self.render_mode == 'rgb_array':
             # TODO: rgb rendering 
             pass

@@ -3,7 +3,6 @@ firemangrid/__init__.py
 firemangrid/debug.py
 firemangrid/fireman_env.py
 firemangrid/manual_control.py
-firemangrid/multiagent_grid_env.py
 firemangrid/wrappers.py
 firemangrid.egg-info/PKG-INFO
 firemangrid.egg-info/SOURCES.txt
@@ -17,7 +16,9 @@ firemangrid/core/world_object.py
 firemangrid/envs/__init__.py
 firemangrid/envs/extinguish_fire.py
 firemangrid/envs/move_debris.py
+firemangrid/envs/opendoor.py
 firemangrid/envs/rescue.py
+firemangrid/envs/wholetask.py
 firemangrid/utils/__init__.py
 firemangrid/utils/rendering.py
 firemangrid/utils/window.py

@@ -243,4 +243,41 @@ register(
     id='FiremanGrid-Debris2Survivor-v0',
     entry_point='firemangrid.envs:FiremanWholeEnv',
     kwargs={'task': 'debris2survivor'}
+) 
+
+# Starting from survivor
+register(
+    id='FiremanGrid-Survivor2Start-v0',
+    entry_point='firemangrid.envs:FiremanWholeEnv',
+    kwargs={'task': 'survivor2start'}
+)
+
+register(
+    id='FiremanGrid-Survivor2Key-v0',
+    entry_point='firemangrid.envs:FiremanWholeEnv',
+    kwargs={'task': 'survivor2key'}
+)
+
+register(
+    id='FiremanGrid-Survivor2Door-v0',
+    entry_point='firemangrid.envs:FiremanWholeEnv',
+    kwargs={'task': 'survivor2door'}
+)
+
+register(
+    id='FiremanGrid-Survivor2FireExtinguisher-v0',
+    entry_point='firemangrid.envs:FiremanWholeEnv',
+    kwargs={'task': 'survivor2fireextinguisher'}
+)
+
+register(
+    id='FiremanGrid-Survivor2Fire-v0',
+    entry_point='firemangrid.envs:FiremanWholeEnv',
+    kwargs={'task': 'survivor2fire'}
+)
+
+register(
+    id='FiremanGrid-Survivor2Debris-v0',
+    entry_point='firemangrid.envs:FiremanWholeEnv',
+    kwargs={'task': 'survivor2debris'}
 )

@@ -17,7 +17,8 @@ class FiremanWholeEnv(FiremanEnv):
                       'door2start', 'door2key', 'door2fireextinguisher', 'door2fire', 'door2debris', 'door2survivor',
                       'fireextinguisher2start', 'fireextinguisher2key', 'fireextinguisher2door', 'fireextinguisher2fire', 'fireextinguisher2debris', 'fireextinguisher2survivor',
                       'fire2start', 'fire2key', 'fire2door', 'fire2fireextinguisher', 'fire2debris', 'fire2survivor',
-                      'debris2start', 'debris2key', 'debris2door', 'debris2fireextinguisher', 'debris2fire', 'debris2survivor']
+                      'debris2start', 'debris2key', 'debris2door', 'debris2fireextinguisher', 'debris2fire', 'debris2survivor', 
+                      'survivor2start', 'survivor2key', 'survivor2door', 'survivor2fireextinguisher', 'survivor2fire', 'survivor2debris']
 
     def _gen_grid(self, width, height):
         self.grid = Grid(width=width, height=height)
@@ -77,8 +78,8 @@ class FiremanWholeEnv(FiremanEnv):
             self.grid.set(*fe_pos, FireExtinguisher())
         if self.task_id < self.tasks.index('fire2start'):
             self.grid.set(*fire_pos, Fire()) 
-        if self.task_id < self.tasks.index('debris2start'):
-            self.grid.set(*debris_pos, Debris())
+        # if self.task_id < self.tasks.index('debris2start'):
+        #     self.grid.set(*debris_pos, Debris())
 
         # if not (self.task == 'fire2start' or self.task == 'fire2key' or self.task == 'fire2door' or self.task == 'fire2fireextinguisher' or self.task == 'fire2debris' or self.task == 'fire2survivor'):
         #     self.grid.set(*fire_pos, Fire())
@@ -126,7 +127,7 @@ class FiremanWholeEnv(FiremanEnv):
             self.agent_pos = debris_pos
         
         # self.agent_pos = init_canditates[np.random.choice(len(init_canditates))] 
-        print(self.agent_pos)
+        # print(self.agent_pos)
         
         self.agent_dir = np.random.choice(len(DIR_TO_VEC))
         # print(self.agent_dir)
@@ -168,7 +169,11 @@ class FiremanWholeEnv(FiremanEnv):
         fwd_pos = DIR_TO_VEC[self.agent_dir] + self.agent_pos
 
         fwd_cell = self.grid.get(*fwd_pos) 
-        cur_cell = self.grid.get(*self.agent_pos)
+        cur_cell = self.grid.get(*self.agent_pos) 
+
+        task_id = self.tasks.index(self.task)
+        if task_id >= self.tasks.index('survivor2start'):
+            terminated = True
 
         if action == self.actions.left: 
             self.agent_dir -= 1 
