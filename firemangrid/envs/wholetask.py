@@ -253,7 +253,7 @@ class FiremanWholeEnv(FiremanEnv):
                     if fwd_cell.type == 'fire' and (self.task == 'start2fire' or self.task == 'key2fire' or self.task == 'door2fire' or self.task == 'fireextinguisher2fire' or self.task == 'debris2fire'):
                         reward = self._reward()
                         terminated = True
-                    self.grid.set(*fwd_pos, None)\
+                    self.grid.set(*fwd_pos, None)
                     self.carrying = None
 
         elif action == self.actions.toggle:
