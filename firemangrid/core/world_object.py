@@ -210,7 +210,7 @@ class Start(WorldObj):
     The starting grid of the agent at the beginning 
     '''
     def __init__(self):
-        super().__init__('start', 'white') 
+        super().__init__('start', 'black') 
     
     def can_overlap(self):
         return True 
@@ -218,7 +218,7 @@ class Start(WorldObj):
 
 class Key(WorldObj):
     def __init__(self, color):
-        super().__init__('key', color) 
+        super().__init__('key', 'yellow') 
     
     def can_pickup(self):
         return True

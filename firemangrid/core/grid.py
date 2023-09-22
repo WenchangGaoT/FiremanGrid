@@ -92,7 +92,9 @@ class Grid:
                 else: 
                     # print(encoded[i, j, :])
                     # print(type(v.encode()))
-                    encoded[i, j, :] = v.encode()
+                    encoded[i, j, :] = v.encode() 
+
+        # print(encoded)
         return encoded
         
         

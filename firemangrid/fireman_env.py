@@ -22,7 +22,7 @@ class Actions(IntEnum):
     spray = 4 
     toggle = 5 
     save = 6
-    move = 7
+    # move = 7
     hold = 8 
 
 
@@ -82,6 +82,7 @@ class FiremanEnv(gym.Env):
             'direction': self.agent_dir,
             'inventory': np.zeros(len(OBJECT_TO_IDX), dtype=np.uint8) # TODO: Add inventory
         } 
+        obs['image'][self.agent_pos[0], self.agent_pos[1], :] = np.array([OBJECT_TO_IDX['agent'], COLOR_TO_IDX['green'], self.agent_dir])
         return obs 
     
     def _reward(self):
@@ -169,15 +170,15 @@ class FiremanEnv(gym.Env):
                     terminated = True 
                     reward = self._reward()
 
-        elif action == self.actions.move:
-            if fwd_cell is None or not fwd_cell.can_move():
-                pass 
-            else:
-                self.grid.set(*fwd_pos, None)
+        # elif action == self.actions.move:
+        #     if fwd_cell is None or not fwd_cell.can_move():
+        #         pass 
+        #     else:
+        #         self.grid.set(*fwd_pos, None)
         
-        elif action == self.actions.hold:
-            # Do nothing!
-            pass 
+        # elif action == self.actions.hold:
+        #     # Do nothing!
+        #     pass 
 
         else:
             raise ValueError(f"Unknown action: {action}")

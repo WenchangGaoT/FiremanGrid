@@ -93,7 +93,7 @@ class CLIControl:
             "k": Actions.pickup,
             "l": Actions.spray,
             "u": Actions.save,
-            'i': Actions.move,
+            # 'i': Actions.move,
             'o': Actions.hold
         }
 
@@ -130,7 +130,7 @@ class CLIControl:
 
 if __name__ == "__main__":
 
-    env_id = 'FiremanGrid-Start2Key-v0'
+    env_id = 'FiremanGrid-FireExtinguisher2Fire-v0'
 
     env: ExtinguishFireEnv = gym.make(
         env_id,
@@ -140,3 +140,5 @@ if __name__ == "__main__":
     # TODO: check if this can be removed
     cli_control = CLIControl(env)
     cli_control.start()
+
+

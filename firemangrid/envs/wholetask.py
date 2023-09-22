@@ -11,6 +11,7 @@ from firemangrid.fireman_env import FiremanEnv
 class FiremanWholeEnv(FiremanEnv):
     def __init__(self, grid_size=13, max_steps=500, render_mode='rgb_array', task='start2key'):
         super().__init__(grid_size, max_steps, render_mode)  
+        print('task is: ', task)
         self.task = task
         self.tasks = ['start2key', 'start2door', 'start2fireextinguisher', 'start2fire', 'start2debris', 'start2survivor',
                       'key2start', 'key2door', 'key2fireextinguisher', 'key2fire', 'key2debris', 'key2survivor',
@@ -23,7 +24,7 @@ class FiremanWholeEnv(FiremanEnv):
     def _gen_grid(self, width, height):
         self.grid = Grid(width=width, height=height)
 
-        # Walls
+        # Surrounding Walls
         for i in range(0, width):
             self.grid.set(i, 0, Wall()) 
             self.grid.set(i, width-1, Wall()) 
@@ -32,11 +33,16 @@ class FiremanWholeEnv(FiremanEnv):
             self.grid.set(0, j, Wall()) 
             self.grid.set(height-1, j, Wall()) 
 
-        for i in range(1, 5):
-            self.grid.set(i, 5, Wall())
+        # Survivor's room
+        for i in range(1, 4):
+            self.grid.set(i, 4, Wall())
 
         for j in range(1, 5):
-            self.grid.set(5, j ,Wall())     
+            self.grid.set(4, j ,Wall())     
+
+        # Obstacle walls
+        for i in range(1, 12):
+            self.grid.set(i, 8, Wall())
 
         for j in range(8, 12):
             self.grid.set(j, 8, Wall())
@@ -45,28 +51,55 @@ class FiremanWholeEnv(FiremanEnv):
             self.grid.set(8, j, Wall()) 
 
         for i in range(5, 11):
-            self.grid.set(4, i, Wall()) 
+            self.grid.set(4, i, Wall())   
+
+        for i in range(6, 11):
+            self.grid.set(i, 4, Wall())
+
+        for i in range(6, 11):
+            self.grid.set(i, 2, Wall())
+
+        self.grid.set(6, 9, Wall()) 
+        self.grid.set(6, 10, Wall())
+        self.grid.set(2, 10, Wall())
+        self.grid.set(3, 10, Wall())
+        self.grid.set(8, 2, Wall())
+        self.grid.set(8, 3, Wall())
+
+        # self.grid.set(, 6)
         # Lava
-        for j in range(2, 8):
-            self.grid.set(9, j, Lava())
-        for j in range(2, 8):
-            self.grid.set(8, j, Lava())
-        for i in range(1, 4):
-            self.grid.set(i, 8, Lava())
-        self.grid.set(5, 5, Lava())
-        self.grid.set(6, 8, Lava()) 
+        self.grid.set(1, 7, Lava())
+        self.grid.set(3, 7, Lava())
+        self.grid.set(2, 8, None) 
+        for i in range(6, 11):
+            self.grid.set(i, 6, Wall())
+        # for j in range(2, 8):
+        #     self.grid.set(8, j, Lava())
+        # for i in range(1, 4):
+        #     self.grid.set(i, 8, Lava())
+        # self.grid.set(5, 5, Lava())
+        # self.grid.set(6, 8, Lava()) 
 
-        fire_pos = (7, 3)
-        fe_pos = (11, 3)
-        key_pos = (2, 10)
+        fire_pos = (2, 4)
+        fe_pos = (2, 5)
+        key_pos = (3, 9)
         debris_pos = (5, 8) 
-        door_pos = (5, 2)
+        door_pos = (5, 8)
 
+        fe_pos_x = np.random.choice([8, 9, 10])
+        fe_pos_y = np.random.choice([5, 6, 7])
 
-        self.grid.set(5, 2, Door('yellow'))   
+        fe_candidates = []
+        for i in range(5, 9):
+            for j in range(1, 7):
+                if self.grid.get(i, j) is None:
+                    fe_candidates.append((i, j))
+        fe_pos = fe_candidates[np.random.choice(len(fe_candidates))]
+
+        self.grid.set(*door_pos, Door('yellow'))   
         self.task_id = self.tasks.index(self.task)
 
-        if self.task_id < self.tasks.index('key2start'):
+        if self.task_id < self.tasks.index('key2start') or self.task == 'door2key' or self.task == 'fireextinguisher2key' or self.task == 'fire2key' or self.task == 'debris2key' or self.task == 'survivor2key':
             self.grid.set(*key_pos, Key('yellow'))
         if self.task_id < self.tasks.index('door2start'):
             self.grid.get(*door_pos).is_locked = True
@@ -74,9 +107,9 @@ class FiremanWholeEnv(FiremanEnv):
         else:
             self.grid.get(*door_pos).is_locked = False
             self.grid.get(*door_pos).is_open = True
-        if self.task_id < self.tasks.index('fireextinguisher2start'):
+        if self.task_id < self.tasks.index('fireextinguisher2start') or self.task == 'fire2fireextinguisher' or self.task == 'debris2fireextinguisher' or self.task == 'survivor2extinguisher':
             self.grid.set(*fe_pos, FireExtinguisher())
-        if self.task_id < self.tasks.index('fire2start'):
+        if self.task_id < self.tasks.index('fire2start') or self.task == 'debris2fire' or self.task == 'survivor2fire':
             self.grid.set(*fire_pos, Fire()) 
         # if self.task_id < self.tasks.index('debris2start'):
         #     self.grid.set(*debris_pos, Debris())
@@ -93,8 +126,8 @@ class FiremanWholeEnv(FiremanEnv):
         # if not (self.task == 'debris2start' or self.task == 'debris2key' or self.task == 'debris2door' or self.task == 'debris2fireextinguisher' or self.task == 'debris2fire' or self.task == 'debris2survivor'):
         #     self.grid.set(*debris_pos, Debris())
 
-        survivor_x = np.random.choice([1, 2, 3, 4])
-        survivor_y = np.random.choice([1, 2, 3, 4]) 
+        survivor_x = np.random.choice([1, 2, 3])
+        survivor_y = np.random.choice([1, 2, 3]) 
         self.grid.set(survivor_x, survivor_y, Survivor())
 
         for i in range(9, 12):
@@ -195,6 +228,7 @@ class FiremanWholeEnv(FiremanEnv):
             if fwd_cell is not None and fwd_cell.can_pickup():
                 if self.carrying is None:
                     self.carrying = fwd_cell 
+                    # print('Picked up ', fwd_cell.type)
                     self.grid.set(*fwd_pos, None) 
                 else:
                     pass # Currently we allow only pickup one thing at one time! 
