@@ -68,11 +68,11 @@ class FiremanWholeEnv(FiremanEnv):
 
         # self.grid.set(, 6)
         # Lava
-        self.grid.set(1, 7, Lava())
-        self.grid.set(3, 7, Lava())
-        self.grid.set(1, 5, Lava())
-        self.grid.set(2, 5, Lava())
-        self.grid.set(3, 5, Lava())
+        self.grid.set(1, 7, Wall())
+        self.grid.set(3, 7, Wall())
+        self.grid.set(1, 5, Wall())
+        self.grid.set(2, 5, Wall())
+        self.grid.set(3, 5, Wall())
         self.grid.set(2, 8, None) 
         for i in range(6, 11):
             self.grid.set(i, 6, Wall())
@@ -247,13 +247,14 @@ class FiremanWholeEnv(FiremanEnv):
             if self.carrying is None:
                 pass # There is nothihg to spray
             elif self.carrying.can_spray():
-                self.carrying = None
+                # self.carrying = None
                 if fwd_cell is not None and fwd_cell.can_be_sprayed():
                     # TODO: add more conditions based on the graph environment  
                     if fwd_cell.type == 'fire' and (self.task == 'start2fire' or self.task == 'key2fire' or self.task == 'door2fire' or self.task == 'fireextinguisher2fire' or self.task == 'debris2fire'):
                         reward = self._reward()
                         terminated = True
-                    self.grid.set(*fwd_pos, None)
+                    self.grid.set(*fwd_pos, None)\
+                    self.carrying = None
 
         elif action == self.actions.toggle:
             if fwd_cell is None or not fwd_cell.can_toggle(): # Invalid action
