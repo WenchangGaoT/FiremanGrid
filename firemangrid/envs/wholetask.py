@@ -70,6 +70,9 @@ class FiremanWholeEnv(FiremanEnv):
         # Lava
         self.grid.set(1, 7, Lava())
         self.grid.set(3, 7, Lava())
+        self.grid.set(1, 5, Lava())
+        self.grid.set(2, 5, Lava())
+        self.grid.set(3, 5, Lava())
         self.grid.set(2, 8, None) 
         for i in range(6, 11):
             self.grid.set(i, 6, Wall())
@@ -80,17 +83,17 @@ class FiremanWholeEnv(FiremanEnv):
         # self.grid.set(5, 5, Lava())
         # self.grid.set(6, 8, Lava()) 
 
-        fire_pos = (2, 4)
+        fire_pos = (4, 2)
         fe_pos = (2, 5)
-        key_pos = (3, 9)
+        key_pos = (3, 6)
         debris_pos = (5, 8) 
         door_pos = (5, 8)
 
-        fe_pos_x = np.random.choice([8, 9, 10])
-        fe_pos_y = np.random.choice([5, 6, 7])
+        # fe_pos_x = np.random.choice([8, 9, 10])
+        # fe_pos_y = np.random.choice([5, 6, 7])
 
         fe_candidates = []
-        for i in range(5, 9):
+        for i in range(8, 11):
             for j in range(1, 7):
                 if self.grid.get(i, j) is None:
                     fe_candidates.append((i, j))
